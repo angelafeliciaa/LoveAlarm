@@ -1,26 +1,41 @@
+const express = require('express');
 const mongoose = require('mongoose');
+require('dotenv').config();
 
-const MONGO_URL = process.env.MONGO_URL || 'mongodb://localhost:27017/mydatabase';
+// not sure --------------------------
+const app = express();
+const PORT = process.env.PORT || 3000;
+// -----------------------------------
 
-async function main() {
+// Connect to MongoDB using environment variable
+mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true });
+
+// need to change-----------------------------
+const locationSchema = new mongoose.Schema({
+    latitude: Number,
+    longitude: Number,
+    timestamp: { type: Date, default: Date.now }
+});
+// --------------------------------------------
+
+
+const Location = mongoose.model('Location', locationSchema);
+
+app.use(express.json());
+
+// API Endpoint to receive location data from frontend
+app.post('/api/location', async (req, res) => {
+    const { latitude, longitude } = req.body;
     try {
-        // Connect to the MongoDB cluster
-        await mongoose.connect(MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true });
-
-        console.log("Connected to MongoDB");
-
-        // Perform operations with the client
-        // Example: List all databases
-        const collections = await mongoose.connection.db.listCollections().toArray();
-        console.log("Collections:");
-        collections.forEach(collection => console.log(` - ${collection.name}`));
-
-
-    } finally {
-        // Close the connection when finished
-        await mongoose.disconnect();
-        console.log("Disconnected from MongoDB");
+        const location = new Location({ latitude, longitude });
+        await location.save();
+        res.status(201).json({ message: 'Location data saved successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
     }
-}
+});
 
-main().catch(console.error);
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
