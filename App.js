@@ -22,7 +22,7 @@ const Home = ({ navigation }) => {
         <Text style={styles.title}>Love Alarm</Text>
         {/* Include the LottieView component */}
         <LottieView
-          source={require("./assets/heartAnimation.json")} // Provide the correct path
+          source={require("./assets/heartAnime.json")} // Provide the correct path
           autoPlay
           loop
           style={styles.animation}
