@@ -63,6 +63,12 @@ app.get('/api/nearbyUsers', async (req, res) => {
     const { latitude, longitude, name, description, liked } = req.query;
 
     try {
+        if (name && latitude && longitude) {
+            // Update user's location based on name
+            await User.findOneAndUpdate({ name }, { latitude, longitude });
+        }
+
+        // Find nearby users within 3 meters
         const  user = await User.find({});
         const nearbyUsers = user.filter(loc => {
             const distance = calculateDistance(latitude, longitude, loc.latitude, loc.longitude);
