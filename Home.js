@@ -76,7 +76,7 @@ const Home = () => {
       // console.log(req);
       if (response.ok) {
         console.log('User data saved successfully');
-        navigation.navigate('MatchingScreen');
+        navigation.navigate('MatchingScreen', {name, description});
       } else {
         console.error('Failed to save user data');
       }
