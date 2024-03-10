@@ -73,6 +73,7 @@ const Home = () => {
         }),
       });
 
+      // console.log(req);
       if (response.ok) {
         console.log('User data saved successfully');
         navigation.navigate('MatchingScreen');
