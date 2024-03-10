@@ -84,7 +84,7 @@ app.post('/api/nearbyUsers', async (req, res) => {
             return distance <= 3;
         });
 
-        const likesCount = 0;
+        let likesCount = 0;
 
         for (const nearbyUser of nearbyUsers) {
             if (nearbyUser.likes.find(likeName => name === likeName)) {
@@ -105,7 +105,7 @@ app.put('/api/likeUsers', async (req, res) => {
     const { userName, likeName } = req.body;
 
     try {
-        const user = await User.findOneAndUpdate({ userName }, { $addToSet: {likes: likeName} });
+        const user = await User.findOneAndUpdate({ name: userName }, { $addToSet: {likes: likeName} });
         // if (!user) {
         //     return res.status(404).json({ message: 'User not found' });
         // }
