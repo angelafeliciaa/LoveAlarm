@@ -19,50 +19,32 @@ mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopol
     });
 
 
-// need to change-----------------------------
-const locationSchema = new mongoose.Schema({
+// location data
+const userSchema = new mongoose.Schema({
     latitude: Number,
     longitude: Number,
+    name: String,
+    description: String,
     timestamp: { type: Date, default: Date.now }
 });
-// --------------------------------------------
 
-const userSchema = new mongoose.Schema({
-    name: String,
-    description: String,
-});
+// const Location = mongoose.model('Location', locationSchema);
+const User = mongoose.model('User', userSchema);
 
-const Location = mongoose.model('Location', locationSchema);
-const User = mongoose.model('User', new mongoose.Schema({
-    name: String,
-    description: String,
-}));
 
 app.use(cors()); // Enable CORS for all routes
 app.use(express.json());
 
 // API Endpoint to receive location data from frontend
-app.post('/api/location', async (req, res) => {
-    const { latitude, longitude } = req.body;
-    try {
-        const location = new Location({ latitude, longitude });
-        await location.save();
-        res.status(201).json({ message: 'Location data saved successfully' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+app.post('/api/record', async (req, res) => {
+    const { latitude, longitude, name, description } = req.body;
+
+    if (!latitude || !longitude || !name || !description) {
+        return res.status(400).json({ message: 'Latitude, Longitude, Name, and Description are required' });
     }
-});
-
-app.post('/api/user', async (req, res) => {
-    const { name, description } = req.body;
-
-    if (!name || !description) {
-        return res.status(400).json({ message: 'Name and Description are required' });
-    }
-
+    
     try {
-        const user = new User({ name, description });
+        const user = new User({ latitude, longitude, name, description });
         await user.save();
         res.status(201).json({ message: 'User data saved successfully' });
     } catch (error) {
@@ -70,6 +52,23 @@ app.post('/api/user', async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
+
+// app.post('/api/record', async (req, res) => {
+//     const { name, description } = req.body;
+
+//     // if (!name || !description) {
+//     //     return res.status(400).json({ message: 'Name and Description are required' });
+//     // }
+
+//     try {
+//         const user = new User({ name, description });
+//         await user.save();
+//         res.status(201).json({ message: 'User data saved successfully' });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ message: 'Internal server error' });
+//     }
+// });
 
 
 app.listen(PORT, () => {
