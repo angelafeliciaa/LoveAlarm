@@ -78,10 +78,10 @@ app.post('/api/nearbyUsers', async (req, res) => {
         }
 
         // Find nearby users within 3 meters
-        const  user = await User.find({});
+        const  user = await User.find({$ne: { name }});
         const nearbyUsers = user.filter(loc => {
             const distance = calculateDistance(latitude, longitude, loc.latitude, loc.longitude);
-            return distance <= 0.003 && loc.name !== name;
+            return distance <= 0.003;
         });
 
         let likesCount = 0;
