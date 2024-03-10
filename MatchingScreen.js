@@ -91,6 +91,8 @@ const MatchingScreen = ({ route }) => {
         //     latitude: location.latitude,
         //     longitude: location.longitude,
         // }));
+
+        
         fetch('http://128.189.210.153:3001/api/nearbyUsers', {
             method: 'POST',
             headers: {
@@ -105,7 +107,7 @@ const MatchingScreen = ({ route }) => {
         })
             .then(result => result.json())
             .then(result => {
-                // console.log(results)
+                console.log(result)
                 setNearbyUsers(result.nearbyUsers)
                 setLikesCount(result.likesCount)
             })
@@ -134,7 +136,8 @@ const MatchingScreen = ({ route }) => {
 
                     <View style={styles.heartsContainer}>
                         {
-                            nearbyUsers.map((nearbyUser) => (
+                            nearbyUsers?.filter(user => user.name !== name)
+                            .map((nearbyUser) => (
                                 <TouchableOpacity
                                     key={nearbyUser._id}
                                     style={styles.touchableHeart}

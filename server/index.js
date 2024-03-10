@@ -74,7 +74,7 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 // Get locations within 10 meters of specified coordinates
 app.post('/api/nearbyUsers', async (req, res) => {
 
-    console.log(req.body);
+    // console.log(req.body);
     const { latitude, longitude, name } = req.body;
 
 
@@ -98,9 +98,23 @@ app.post('/api/nearbyUsers', async (req, res) => {
         //     }
         // });
 
-        const  users = await User.find({$ne: { name }});
+        const users = await User.find({ name: { $ne: name } });
+        
+
+        if (name == "Copito1234") {
+            console.log('------------------');
+        }
+        
         const nearbyUsers = users.filter(loc => {
+            
+            
+
             const distance = calculateDistance(latitude, longitude, loc.latitude, loc.longitude);
+
+            if (name == "Copito1234") {
+                console.log(distance);
+            }
+            
             return distance <= 3;
         });
 
@@ -123,7 +137,7 @@ app.post('/api/nearbyUsers', async (req, res) => {
 // Add a new API endpoint to handle "like" button press
 app.put('/api/likeUsers', async (req, res) => {
     const { userName, likeName } = req.body;
-    console.log(userName, likeName);
+    // console.log(userName, likeName);
     try {
         const user = await User.findOneAndUpdate({ name: userName }, { $addToSet: {likes: likeName} });
         // if (!user) {
