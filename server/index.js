@@ -103,7 +103,7 @@ app.post('/api/nearbyUsers', async (req, res) => {
 // Add a new API endpoint to handle "like" button press
 app.put('/api/likeUsers', async (req, res) => {
     const { userName, likeName } = req.body;
-
+    console.log(userName, likeName);
     try {
         const user = await User.findOneAndUpdate({ name: userName }, { $addToSet: {likes: likeName} });
         // if (!user) {

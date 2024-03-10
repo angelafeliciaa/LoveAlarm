@@ -14,10 +14,26 @@ const MatchingScreen = ({ route }) => {
     const [nearbyUsers, setNearbyUsers] = useState([]);
     const [location, setLocation] = useState(null);
     const [likesCount, setLikesCount] = useState(0);
+    const [currentModalUser, setCurrentModalUser] = useState(null);
     // console.log(location);
 
     const handleRingPress = () => {
-        setRingModalVisible(true);
+
+        fetch('http://128.189.210.153:3001/api/likeUsers', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userName: name,
+                likeName: currentModalUser.name
+            }),
+        })
+        .then(console.log)
+            .then(() => setIsSuccess(true))
+            .catch(console.error)
+
     };
 
     const closeRingModal = () => {
@@ -27,13 +43,14 @@ const MatchingScreen = ({ route }) => {
         setIsSuccess(true);
     };
 
-    const handleHeart1Press = () => {
+    const handleHeartPress = (nearbyUser) => () => {
+        setCurrentModalUser(nearbyUser);
         setModalVisible(true);
     };
 
-    const handleHeart2Press = () => {
-        setModalVisible(true);
-    };
+    // const handleHeart2Press = () => {
+    //     setModalVisible(true);
+    // };
 
     const closeModal = () => {
         setModalVisible(false);
@@ -76,7 +93,7 @@ const MatchingScreen = ({ route }) => {
         fetch('http://128.189.210.153:3001/api/nearbyUsers', {
             method: 'POST',
             headers: {
-                'Accept': 'application/json', 
+                'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -96,7 +113,7 @@ const MatchingScreen = ({ route }) => {
 
     }, [location])
 
-
+    // console.log(nearbyUsers.length);
     return (
         <LinearGradient
             style={styles.container}
@@ -113,7 +130,29 @@ const MatchingScreen = ({ route }) => {
                         loop
                         style={styles.animation}
                     />
-                    <TouchableOpacity
+
+                    <View style={styles.heartsContainer}>
+                        {
+                            nearbyUsers.map((nearbyUser) => (
+                                <TouchableOpacity
+                                    key={nearbyUser._id}
+                                    style={styles.touchableHeart}
+                                    onPress={handleHeartPress(nearbyUser)}
+                                >
+                                    <LottieView
+                                        source={require("./assets/heart.json")}
+                                        autoPlay
+                                        loop
+                                        style={styles.heartanimation}
+                                    />
+                                </TouchableOpacity>
+                            ))
+                        }
+
+                    </View>
+
+
+                    {/* <TouchableOpacity
                         style={styles.touchableHeart}
                         onPress={handleHeart1Press}
                     >
@@ -134,7 +173,7 @@ const MatchingScreen = ({ route }) => {
                             loop
                             style={styles.heartanimation2}
                         />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
 
             </View>
@@ -157,24 +196,28 @@ const MatchingScreen = ({ route }) => {
 
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
-                        <Text style={styles.textTitle}>"I am..."</Text>
+                        
                         {isSuccess ? <Text style={styles.buttonText}>SUCCESS!</Text> : (
                             <>
+                            <Text style={styles.textTitle}>"I am..."</Text>
+
                                 <Text style={styles.modalText} numberOfLines={2}>
-                                    Name:                                           {nearbyUsers[0]?.name}
+                                    Name: {currentModalUser?.name}
                                 </Text>
 
                                 <Text style={styles.modalText} numberOfLines={4}>
-                                    Description:  {nearbyUsers[0]?.description}
+                                    Description: {currentModalUser?.description}
                                 </Text>
+
+                                <TouchableOpacity style={styles.button} onPress={handleRingPress}>
+                                    <Text style={styles.buttonText} >RING</Text>
+                                </TouchableOpacity>
                             </>
                         )}
 
 
 
-                        <TouchableOpacity style={styles.button} onPress={handleButtonPress}>
-                            <Text style={styles.buttonText} >RING</Text>
-                        </TouchableOpacity>
+
                         <TouchableOpacity onPress={closeModal}>
                             <Text style={styles.closeButton} >Close</Text>
                         </TouchableOpacity>
@@ -299,12 +342,21 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     touchableHeart: {
-        position: 'absolute',
+        // position: 'absolute',
         width: 320, // Adjust as needed
         height: 230, // Adjust as needed
-        top: 27, // Adjust as needed
-        left: 10, // Adjust as needed
+        // top: 27, // Adjust as needed
+        // left: 10, // Adjust as needed
     },
+    heartsContainer: {
+        display: 'flex',
+        alignItems: 'center',
+        // alignContent: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        columnGap: -250,
+        // flexWrap: 'wrap'
+    }
 });
 
 export default MatchingScreen;
