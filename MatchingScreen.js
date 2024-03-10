@@ -183,8 +183,8 @@ const MatchingScreen = ({ route }) => {
             </View>
             <View style={styles.textContainer}>
 
-                <Text style={styles.text}>Someone likes you</Text>
-                <Text style={styles.text}>within a 10-meter radius</Text>
+            <Text style={styles.text}>Someone within a 10-meter </Text>
+                <Text style={styles.text}>radius rang your alarm </Text>
             </View>
             <View style={styles.numberContainer}>
                 <Text style={styles.number}>{likesCount}</Text>
@@ -273,6 +273,7 @@ const styles = StyleSheet.create({
     },
 
     text: {
+       
         fontFamily: 'Gill Sans',
         fontSize: 15,
         fontWeight: 'bold',
@@ -291,7 +292,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         top: '70%',
-        left: '32%',
+        left: '29%',
         transform: [{ translateX: -20 }, { translateY: -20 }], // Center the text
     },
     modalContainer: {
@@ -353,13 +354,19 @@ const styles = StyleSheet.create({
         // left: 10, // Adjust as needed
     },
     heartsContainer: {
+        flex: 1,
         display: 'flex',
-        alignItems: 'center',
-        // alignContent: 'center',
         justifyContent: 'center',
-        flexDirection: 'row',
-        columnGap: -250,
-        // flexWrap: 'wrap'
+        alignItems: 'top',
+        left: -30,
+        top: -300,
+        // display: 'flex',
+        // alignItems: 'center',
+        //alignContent: 'center',
+        // justifyContent: 'center',
+        // flexDirection: 'row',
+        // columnGap: -250,
+        // // flexWrap: 'wrap'
     }
 });
 

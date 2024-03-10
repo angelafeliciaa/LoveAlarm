@@ -23,9 +23,17 @@ mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopol
 
 // user data
 const userSchema = new mongoose.Schema({
-    latitude: Number,
-    longitude: Number,
-    location: {type: 'Point', coordinates: [latitude, longitude]},
+    location: {
+        type: {
+          type: String, // Don't do { location: { type: String } }
+          enum: ['Point'], // 'location.type' must be 'Point'
+          required: true
+        },
+        coordinates: {
+          type: [Number],
+          required: true
+        }
+      },
     name: String,
     description: String,
     likes: [{type: String}],
@@ -50,7 +58,7 @@ app.post('/api/record', async (req, res) => {
     }
     
     try {
-        const user = new User({ latitude, longitude, name, description, likedBy: [] });
+        const user = new User({ location: {type: "Point", coordinates:[longitude, latitude]}, name, description, likedBy: [] });
         await user.save();
         res.status(201).json({ message: 'User data saved successfully' });
     } catch (error) {
@@ -84,20 +92,19 @@ app.post('/api/nearbyUsers', async (req, res) => {
     try {
         if (name && latitude && longitude) {
             // Update user's location based on name
-            await User.findOneAndUpdate({ name }, { latitude, longitude });
+            await User.findOneAndUpdate({ name }, { location: {type: "Point", coordinates:[longitude, latitude]} });
         }
 
         // Find nearby users within 3 meters
-        const  nearbyUser = await User.find({$ne: { name }, 
-            $geoNear: {
-                near: {
-                    type: "Point",
-                    coordinates: [longitude, latitude]
+        const  nearbyUsers = await User.find({$ne: { name }, 
+            location: {
+                $near: {
+                    $geometry: {
+                        type: "Point",
+                        coordinates: [longitude, latitude]
+                    },
+                    $maxDistance: 1000,
                 },
-
-                distanceField: "distance",
-                maxDistance: 15,
-                spherical: true
             }
         });
 
