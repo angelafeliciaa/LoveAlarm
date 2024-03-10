@@ -34,14 +34,14 @@ app.use(express.json());
 
 // API Endpoint to receive location data from frontend
 app.post('/api/record', async (req, res) => {
-    const { latitude, longitude, name, description, liked } = req.body;
+    const { latitude, longitude, name, description } = req.body;
 
     if (!latitude || !longitude || !name || !description) {
         return res.status(400).json({ message: 'Latitude, Longitude, Name, and Description are required' });
     }
     
     try {
-        const user = new User({ latitude, longitude, name, description, liked });
+        const user = new User({ latitude, longitude, name, description, liked: false });
         await user.save();
         res.status(201).json({ message: 'User data saved successfully' });
     } catch (error) {
