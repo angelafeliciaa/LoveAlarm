@@ -19,7 +19,7 @@ mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopol
     });
 
 
-// location data
+// user data
 const userSchema = new mongoose.Schema({
     latitude: Number,
     longitude: Number,
@@ -37,7 +37,9 @@ app.use(express.json());
 
 // API Endpoint to receive location data from frontend
 app.post('/api/record', async (req, res) => {
+    console.log(req.body); 
     const { latitude, longitude, name, description } = req.body;
+    console.log(latitude, longitude, name, description);
 
     if (!latitude || !longitude || !name || !description) {
         return res.status(400).json({ message: 'Latitude, Longitude, Name, and Description are required' });
