@@ -161,11 +161,11 @@ const MatchingScreen = ({ route }) => {
                         {isSuccess ? <Text style={styles.buttonText}>SUCCESS!</Text> : (
                             <>
                                 <Text style={styles.modalText} numberOfLines={2}>
-                                    Name:                                           {nearbyUsers[0].name}
+                                    Name:                                           {nearbyUsers[0]?.name}
                                 </Text>
 
                                 <Text style={styles.modalText} numberOfLines={4}>
-                                    Description:  {nearbyUsers[0].description}
+                                    Description:  {nearbyUsers[0]?.description}
                                 </Text>
                             </>
                         )}
