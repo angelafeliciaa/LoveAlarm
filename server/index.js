@@ -66,7 +66,7 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 
 // Get locations within 10 meters of specified coordinates
 app.get('/api/nearbyUsers', async (req, res) => {
-    const { latitude, longitude, name } = req.query;
+    const { latitude, longitude, name } = req.body;
 
     try {
         if (name && latitude && longitude) {
