@@ -72,6 +72,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   buttonText: {
+    fontWeight: 'bold',
+    fontFamily: 'Gill Sans',
     color: 'white',
     fontSize: 18,
   },
@@ -80,6 +82,7 @@ const styles = StyleSheet.create({
     height: 250, // Adjusted animation size
   },
   input: {
+    fontFamily: 'Gill Sans',
     height: 40,
     borderColor: 'white',
     borderWidth: 1,
