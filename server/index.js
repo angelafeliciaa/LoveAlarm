@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
     longitude: Number,
     name: String,
     description: String,
-    liked: Boolean,
+    liked: Number,
     timestamp: { type: Date, default: Date.now }
 });
 
@@ -41,7 +41,7 @@ app.post('/api/record', async (req, res) => {
     }
     
     try {
-        const user = new User({ latitude, longitude, name, description, liked: false });
+        const user = new User({ latitude, longitude, name, description, liked: 0 });
         await user.save();
         res.status(201).json({ message: 'User data saved successfully' });
     } catch (error) {
