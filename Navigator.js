@@ -6,10 +6,10 @@ import MatchingScreen from './MatchingScreen';
 
 const Stack = createStackNavigator();
 
-const App = () => {
+const Navigator = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator initialRouteName="Home" headerMode="none">
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="MatchingScreen" component={MatchingScreen} />
       </Stack.Navigator>
@@ -17,4 +17,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default Navigator;
