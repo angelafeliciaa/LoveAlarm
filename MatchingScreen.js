@@ -43,9 +43,10 @@ const MatchingScreen = ({ route }) => {
         setIsSuccess(true);
     };
 
-    const handleHeartPress = (nearbyUser) => () => {
+    const handleHeartPress = (nearbyUser) => { return () => {
         setCurrentModalUser(nearbyUser);
         setModalVisible(true);
+    };
     };
 
     // const handleHeart2Press = () => {
