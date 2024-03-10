@@ -21,16 +21,9 @@ const userSchema = new mongoose.Schema({
     longitude: Number,
     name: String,
     description: String,
+    liked: Boolean,
     timestamp: { type: Date, default: Date.now }
 });
-
-const locationSchema = new mongoose.Schema({
-    latitude: Number,
-    longitude: Number,
-    timestamp: { type: Date, default: Date.now }
-});
-
-const Location = mongoose.model('Location', locationSchema);
 
 // const Location = mongoose.model('Location', locationSchema);
 const User = mongoose.model('User', userSchema);
@@ -41,14 +34,14 @@ app.use(express.json());
 
 // API Endpoint to receive location data from frontend
 app.post('/api/record', async (req, res) => {
-    const { latitude, longitude, name, description } = req.body;
+    const { latitude, longitude, name, description, liked } = req.body;
 
     if (!latitude || !longitude || !name || !description) {
         return res.status(400).json({ message: 'Latitude, Longitude, Name, and Description are required' });
     }
     
     try {
-        const user = new User({ latitude, longitude, name, description });
+        const user = new User({ latitude, longitude, name, description, liked });
         await user.save();
         res.status(201).json({ message: 'User data saved successfully' });
     } catch (error) {
@@ -67,11 +60,11 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 
 // Get locations within 10 meters of specified coordinates
 app.get('/api/nearbyUsers', async (req, res) => {
-    const { latitude, longitude } = req.query;
+    const { latitude, longitude, name, description, liked } = req.query;
 
     try {
-        const locations = await Location.find({});
-        const nearbyUsers = locations.filter(loc => {
+        const  user = await User.find({});
+        const nearbyUsers = user.filter(loc => {
             const distance = calculateDistance(latitude, longitude, loc.latitude, loc.longitude);
             return distance <= 3;
         });
