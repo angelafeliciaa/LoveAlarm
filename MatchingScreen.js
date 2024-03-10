@@ -20,7 +20,7 @@ const MatchingScreen = ({ route }) => {
     const handleRingPress = () => {
 
         fetch('http://128.189.210.153:3001/api/likeUsers', {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
