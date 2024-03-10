@@ -131,8 +131,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 40,
-    fontWeight: 'bold',
+    fontSize: 30, // Adjusted font size
+    fontFamily: 'Gill Sans',
     marginBottom: 20,
     color: 'white',
   },
@@ -143,14 +143,17 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   buttonText: {
+    fontWeight: 'bold',
+    fontFamily: 'Gill Sans',
     color: 'white',
     fontSize: 18,
   },
   animation: {
-    width: 200,
-    height: 200,
+    width: 250, // Adjusted animation size
+    height: 250, // Adjusted animation size
   },
   input: {
+    fontFamily: 'Gill Sans',
     height: 40,
     borderColor: 'white',
     borderWidth: 1,
