@@ -83,14 +83,14 @@ app.get('/api/nearbyUsers', async (req, res) => {
 
         const likesCount = 0;
 
-        for (const nearbyUser of neaerbyUsers) {
+        for (const nearbyUser of nearbyUsers) {
             if (nearbyUser.likes.find(likeName => name === likeName)) {
                 likesCount += 1;
             }
         
         }
 
-        res.json(nearbyUsers, likesCount);
+        res.json({ nearbyUsers, likesCount });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
