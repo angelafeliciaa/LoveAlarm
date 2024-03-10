@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import LottieView from 'lottie-react-native';
+import * as Location from 'expo-location';
 
 const MatchingScreen = ({ route }) => {
     const { name: initialName, description: initialDescription } = route.params;
@@ -11,7 +12,8 @@ const MatchingScreen = ({ route }) => {
     const [ringModalVisible, setRingModalVisible] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [nearbyUsers, setNearbyUsers] = useState([]);
-    // console.log(isSuccess);
+    const [location, setLocation] = useState();
+    // console.log(location);
 
     const handleRingPress = () => {
         setRingModalVisible(true);
@@ -37,31 +39,52 @@ const MatchingScreen = ({ route }) => {
         setIsSuccess(false);
     };
 
-    // get nearby users every 2s
+    // get nearby users and user's location every 2s
 
     useEffect(() => {
-        function getNearbyUsers(name, description) {
-            fetch('http://128.189.210.153:3000/api/nearbyUsers')
-              .then(result => result.json())
-              .then(result => {
-                console.log(result)
-                setNearbyUsers(result)
-            })
-            .catch(console.log)
+        function getNearbyUsers(name, location) {
 
-          }
-        getNearbyUsers(name, description) 
-        const interval = setInterval(() => getNearbyUsers(name, description), 2000)
+            if (!location) {
+                console.log('No location provided to getNearbyUsers request')
+                return;
+            }
+            // console.log(location);
+            fetch('http://128.189.210.153:3000/api/nearbyUsers')
+                .then(result => result.json())
+                .then(result => {
+                    console.log(result)
+                    setNearbyUsers(result)
+                })
+                .catch(console.log)
+
+        }
+
+        
+        getNearbyUsers(name, location)
+        const interval = setInterval(() => getNearbyUsers(name, location), 2000)
         return () => {
-          clearInterval(interval);
+            clearInterval(interval);
         }
     }, [])
 
 
-    // get location data of myself every 2s
+    // get location data of user every 2s
+    useEffect(() => {
+        (async () => {
+          
+          let { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== 'granted') {
+            setErrorMsg('Permission to access location was denied');
+            return;
+          }
     
+          let location = await Location.getCurrentPositionAsync({});
+          setLocation(location.coords);
+        
+        })();
+      }, []);
 
-    // console.log(nearbyUsers);
+
 
     return (
         <LinearGradient
