@@ -9,6 +9,12 @@ const PORT = process.env.PORT || 3000;
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log('Connected to MongoDB');
+
+        // // Create TTL index
+        // const TTL_SECONDS = 3600; // 1 hour
+        // const indexOptions = { expireAfterSeconds: TTL_SECONDS };
+        // User.collection.createIndex({ timestamp: 1 }, indexOptions);
+
     })
     .catch((error) => {
         console.error('Error connecting to MongoDB:', error);
@@ -21,7 +27,7 @@ const userSchema = new mongoose.Schema({
     longitude: Number,
     name: String,
     description: String,
-    liked: Number,
+    likes: [{type: String}],
     timestamp: { type: Date, default: Date.now }
 });
 
@@ -41,7 +47,7 @@ app.post('/api/record', async (req, res) => {
     }
     
     try {
-        const user = new User({ latitude, longitude, name, description, liked: 0 });
+        const user = new User({ latitude, longitude, name, description, likedBy: [] });
         await user.save();
         res.status(201).json({ message: 'User data saved successfully' });
     } catch (error) {
@@ -75,7 +81,16 @@ app.get('/api/nearbyUsers', async (req, res) => {
             return distance <= 3;
         });
 
-        res.json({ nearbyUsers });
+        const likesCount = 0;
+
+        for (const nearbyUser of neaerbyUsers) {
+            if (nearbyUser.likes.find(likeName => name === likeName)) {
+                likesCount += 1;
+            }
+        
+        }
+
+        res.json(nearbyUsers, likesCount);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
@@ -84,14 +99,14 @@ app.get('/api/nearbyUsers', async (req, res) => {
 
 // Add a new API endpoint to handle "like" button press
 app.put('/api/likeUsers', async (req, res) => {
-    const { name } = req.body;
+    const { userName, likeName } = req.body;
 
     try {
-        const user = await User.findOneAndUpdate({ name }, { $inc: { liked: 1 } });
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-        res.json({ message: 'Liked count increased successfully', likedCount: user.liked });
+        const user = await User.findOneAndUpdate({ userName }, { $addToSet: {likes: likeName} });
+        // if (!user) {
+        //     return res.status(404).json({ message: 'User not found' });
+        // }
+        res.json({ message: 'Liked count increased successfully' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
