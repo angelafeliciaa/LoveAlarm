@@ -60,7 +60,7 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 
 // Get locations within 10 meters of specified coordinates
 app.get('/api/nearbyUsers', async (req, res) => {
-    const { latitude, longitude, name, description, liked } = req.query;
+    const { latitude, longitude, name } = req.query;
 
     try {
         if (name && latitude && longitude) {
@@ -76,6 +76,22 @@ app.get('/api/nearbyUsers', async (req, res) => {
         });
 
         res.json({ nearbyUsers });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+// Add a new API endpoint to handle "like" button press
+app.put('/api/likeUsers', async (req, res) => {
+    const { name } = req.body;
+
+    try {
+        const user = await User.findOneAndUpdate({ name }, { $inc: { liked: 1 } });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.json({ message: 'Liked count increased successfully', likedCount: user.liked });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
