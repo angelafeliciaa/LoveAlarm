@@ -58,10 +58,17 @@ app.post('/api/record', async (req, res) => {
 
 // calculate the distance between two users
 function calculateDistance(lat1, lon1, lat2, lon2) {
-    const x = lat1 - lat2;
-    const y = lon1 - lon2;
-    const distance = Math.sqrt(x * x + y * y);
-    return distance;
+    const R = 6371; // Radius of the Earth in kilometers
+    const dLat = (lat2 - lat1) * Math.PI / 180; // Convert latitude difference to radians
+    const dLon = (lon2 - lon1) * Math.PI / 180; // Convert longitude difference to radians
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distanceKm = R * c; // Distance in kilometers
+    const distanceMeters = distanceKm * 1000; // Convert kilometers to meters
+    return distanceMeters;
 }
 
 // Get locations within 10 meters of specified coordinates
@@ -77,11 +84,24 @@ app.post('/api/nearbyUsers', async (req, res) => {
             await User.findOneAndUpdate({ name }, { latitude, longitude });
         }
 
-        // Find nearby users within 3 meters
-        const  user = await User.find({$ne: { name }});
-        const nearbyUsers = user.filter(loc => {
+        // // Find nearby users within 3 meters
+        // const  users = await User.find({$ne: { name }, 
+        //     $geoNear: {
+        //         near: {
+        //             type: "Point",
+        //             coordinates: [longitude, latitude]
+        //         },
+
+        //         distanceField: "distance",
+        //         maxDistance: 3,
+        //         spherical: true
+        //     }
+        // });
+
+        const  users = await User.find({$ne: { name }});
+        const nearbyUsers = users.filter(loc => {
             const distance = calculateDistance(latitude, longitude, loc.latitude, loc.longitude);
-            return distance <= 0.003;
+            return distance <= 3;
         });
 
         let likesCount = 0;
