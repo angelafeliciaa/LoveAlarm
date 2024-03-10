@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import LottieView from 'lottie-react-native';
@@ -10,7 +10,8 @@ const MatchingScreen = ({ route }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [ringModalVisible, setRingModalVisible] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
-    console.log(isSuccess);
+    const [nearbyUsers, setNearbyUsers] = useState([]);
+    // console.log(isSuccess);
 
     const handleRingPress = () => {
         setRingModalVisible(true);
@@ -35,6 +36,26 @@ const MatchingScreen = ({ route }) => {
         setModalVisible(false);
         setIsSuccess(false);
     };
+
+    useEffect(() => {
+        function getNearbyUsers() {
+            fetch('http://128.189.210.153:3000/api/nearbyUsers')
+              .then(result => result.json())
+              .then(result => {
+                console.log(result)
+                setNearbyUsers(result)
+            })
+            .catch(console.log)
+
+          }
+        getNearbyUsers()
+        const interval = setInterval(() => getNearbyUsers(), 2000)
+        return () => {
+          clearInterval(interval);
+        }
+    }, [])
+
+    // console.log(nearbyUsers);
 
     return (
         <LinearGradient
