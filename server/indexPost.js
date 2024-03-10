@@ -3,12 +3,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
-// not sure --------------------------
 const app = express();
 const PORT = process.env.PORT || 3000;
-// -----------------------------------
-console.log(process.env)
-console.log(process.env.MONGO_URL);
+
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log('Connected to MongoDB');
@@ -37,9 +34,7 @@ app.use(express.json());
 
 // API Endpoint to receive location data from frontend
 app.post('/api/record', async (req, res) => {
-    console.log(req.body); 
     const { latitude, longitude, name, description } = req.body;
-    console.log(latitude, longitude, name, description);
 
     if (!latitude || !longitude || !name || !description) {
         return res.status(400).json({ message: 'Latitude, Longitude, Name, and Description are required' });
@@ -55,22 +50,25 @@ app.post('/api/record', async (req, res) => {
     }
 });
 
-// app.post('/api/record', async (req, res) => {
-//     const { name, description } = req.body;
+// calculate the distance between two users
 
-//     // if (!name || !description) {
-//     //     return res.status(400).json({ message: 'Name and Description are required' });
-//     // }
+// Get locations within 10 meters of specified coordinates
+app.get('/api/nearbyUsers', async (req, res) => {
+    const { latitude, longitude } = req.query;
 
-//     try {
-//         const user = new User({ name, description });
-//         await user.save();
-//         res.status(201).json({ message: 'User data saved successfully' });
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ message: 'Internal server error' });
-//     }
-// });
+    try {
+        const locations = await Location.find({});
+        const nearbyUsers = locations.filter(loc => {
+            const distance = calculateDistance(latitude, longitude, loc.latitude, loc.longitude);
+            return distance <= 10;
+        });
+
+        res.json({ nearbyUsers });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
 
 
 app.listen(PORT, () => {
