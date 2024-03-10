@@ -37,8 +37,10 @@ const MatchingScreen = ({ route }) => {
         setIsSuccess(false);
     };
 
+    // get nearby users every 2s
+
     useEffect(() => {
-        function getNearbyUsers() {
+        function getNearbyUsers(name, description) {
             fetch('http://128.189.210.153:3000/api/nearbyUsers')
               .then(result => result.json())
               .then(result => {
@@ -48,12 +50,16 @@ const MatchingScreen = ({ route }) => {
             .catch(console.log)
 
           }
-        getNearbyUsers()
-        const interval = setInterval(() => getNearbyUsers(), 2000)
+        getNearbyUsers(name, description) 
+        const interval = setInterval(() => getNearbyUsers(name, description), 2000)
         return () => {
           clearInterval(interval);
         }
     }, [])
+
+
+    // get location data of myself every 2s
+    
 
     // console.log(nearbyUsers);
 
