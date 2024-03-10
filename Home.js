@@ -1,17 +1,87 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import LottieView from 'lottie-react-native';
 import { useNavigation } from '@react-navigation/native';
+import * as Permissions from 'expo-permissions';
+import * as Location from 'expo-location';
 
 const Home = () => {
   const navigation = useNavigation();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [location, setLocation] = useState(null);
+  // const [status, requestPermission] = Location.useBackgroundPermissions();
 
-  const handleButtonPress = () => {
-    const params = { name, description };
-    navigation.navigate('MatchingScreen', params);
+  useEffect(() => {
+    requestLocationPermission();
+  }, []);
+
+  const requestLocationPermission = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+  
+      if (status !== 'granted') {
+        console.error('Permission to access location was denied');
+      } else {
+        getLocation();
+      }
+    } catch (error) {
+      console.error('Error requesting location permission:', error);
+    }
+  };
+  
+
+
+  const getLocation = async () => {
+    try {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+
+      if (status !== 'granted') {
+        console.error('Permission to access location was denied');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location.coords);
+
+      // Uncomment the following line if you want to get the location using the Google Geolocation API
+      // getGoogleGeolocation(location.coords.latitude, location.coords.longitude);
+    } catch (error) {
+      console.error('Error getting location:', error);
+    }
+  };
+
+
+  const handleButtonPress = async () => {
+    try {
+      if (!location) {
+        console.error('Location data not available');
+        return;
+      }
+
+      const response = await fetch('http://localhost:3000/api/record', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          description,
+          latitude: location.latitude,
+          longitude: location.longitude,
+        }),
+      });
+
+      if (response.ok) {
+        console.log('User data saved successfully');
+        navigation.navigate('MatchingScreen');
+      } else {
+        console.error('Failed to save user data');
+      }
+    } catch (error) {
+      console.error('Error sending request:', error);
+    }
   };
 
   return (
