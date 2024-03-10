@@ -81,7 +81,7 @@ app.post('/api/nearbyUsers', async (req, res) => {
         const  user = await User.find({});
         const nearbyUsers = user.filter(loc => {
             const distance = calculateDistance(latitude, longitude, loc.latitude, loc.longitude);
-            return distance <= 3;
+            return distance <= 0.003 && loc.name !== name;
         });
 
         let likesCount = 0;
