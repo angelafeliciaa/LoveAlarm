@@ -12,7 +12,8 @@ const MatchingScreen = ({ route }) => {
     const [ringModalVisible, setRingModalVisible] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [nearbyUsers, setNearbyUsers] = useState([]);
-    const [location, setLocation] = useState();
+    const [location, setLocation] = useState(null);
+    const [likesCount, setLikesCount] = useState(0);
     // console.log(location);
 
     const handleRingPress = () => {
@@ -39,51 +40,61 @@ const MatchingScreen = ({ route }) => {
         setIsSuccess(false);
     };
 
-    // get nearby users and user's location every 2s
-
+    // get location data of user every 2s
     useEffect(() => {
-        function getNearbyUsers(name, location) {
-
-            if (!location) {
-                console.log('No location provided to getNearbyUsers request')
+        async function getLocation() {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                setErrorMsg('Permission to access location was denied');
                 return;
             }
-            // console.log(location);
-            fetch('http://128.189.210.153:3000/api/nearbyUsers')
-                .then(result => result.json())
-                .then(result => {
-                    console.log(result)
-                    setNearbyUsers(result)
-                })
-                .catch(console.log)
 
+            let location = await Location.getCurrentPositionAsync({});
+            setLocation(location.coords);
         }
 
-        
-        getNearbyUsers(name, location)
-        const interval = setInterval(() => getNearbyUsers(name, location), 2000)
+        const interval = setInterval(() => getLocation(), 2000)
         return () => {
             clearInterval(interval);
         }
-    }, [])
+    }, []);
 
 
-    // get location data of user every 2s
+    // get nearby users and user's location every 2s
+
     useEffect(() => {
-        (async () => {
-          
-          let { status } = await Location.requestForegroundPermissionsAsync();
-          if (status !== 'granted') {
-            setErrorMsg('Permission to access location was denied');
+        // console.log("hello", location)
+        if (!location?.latitude && !location?.longitude) {
+            console.log('No location provided to getNearbyUsers request')
             return;
-          }
-    
-          let location = await Location.getCurrentPositionAsync({});
-          setLocation(location.coords);
-        
-        })();
-      }, []);
+        }
+        // console.log(JSON.stringify({
+        //     name,
+        //     latitude: location.latitude,
+        //     longitude: location.longitude,
+        // }));
+        fetch('http://128.189.210.153:3001/api/nearbyUsers', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json', 
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name,
+                latitude: location.latitude,
+                longitude: location.longitude,
+            }),
+        })
+            .then(result => result.json())
+            .then(result => {
+                // console.log(results)
+                setNearbyUsers(result.nearbyUsers)
+                setLikesCount(result.likesCount)
+            })
+        //     // .then(console.log)
+        //     .catch(console.error)
 
+    }, [location])
 
 
     return (
@@ -133,7 +144,7 @@ const MatchingScreen = ({ route }) => {
                 <Text style={styles.text}>within a 10-meter radius</Text>
             </View>
             <View style={styles.numberContainer}>
-                <Text style={styles.number}>2</Text>
+                <Text style={styles.number}>{likesCount}</Text>
             </View>
 
             {/* Pop-up Modal */}
@@ -150,11 +161,11 @@ const MatchingScreen = ({ route }) => {
                         {isSuccess ? <Text style={styles.buttonText}>SUCCESS!</Text> : (
                             <>
                                 <Text style={styles.modalText} numberOfLines={2}>
-                                    Name:                                           jsbdjsbd
+                                    Name:                                           {nearbyUsers[0].name}
                                 </Text>
 
                                 <Text style={styles.modalText} numberOfLines={4}>
-                                    Description: jdjdjsnjsndk,,dnkjcbskdbjcs,sdjb
+                                    Description:  {nearbyUsers[0].description}
                                 </Text>
                             </>
                         )}

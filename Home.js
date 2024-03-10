@@ -60,7 +60,7 @@ const Home = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:3000/api/record', {
+      const response = await fetch('http://128.189.210.153:3001/api/record', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

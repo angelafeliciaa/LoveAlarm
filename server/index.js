@@ -4,7 +4,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
@@ -65,8 +65,11 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 }
 
 // Get locations within 10 meters of specified coordinates
-app.get('/api/nearbyUsers', async (req, res) => {
+app.post('/api/nearbyUsers', async (req, res) => {
+
+    console.log(req.body);
     const { latitude, longitude, name } = req.body;
+
 
     try {
         if (name && latitude && longitude) {
