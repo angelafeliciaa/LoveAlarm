@@ -15,7 +15,7 @@ Our app is built using **React Native** and Expo, with **MongoDB** serving as th
 To compute the distance between the users and ensuring that they are within a 10m radius of each other, we relied on MongoDB's **geoNear** command which is used for querying geospatial data. It performs a geospatial query that returns documents based on their proximity to a specified point. This was really helpful in making our implementation simpler, as we didn't have to calculate the distance from latitudes and longitudes manually in the code. 
 
 ## Challenges we ran into
-We were conflicted about how we should implement the location tracking, and after considering several options such as using the React Native BLE library, Google's Geolocation API and Expo Location. BLE would have been the most convenient but it has its own complexities with detection. On the other hand, phone Geolocation API is easier to scale, and we wanted to use Google's Geolocation API for that but we found that Expo also has their own location library, so we decided to go with that.
+We were conflicted about how we should implement the location tracking, and we considered several options such as using the React Native BLE library, Google's Geolocation API and Expo Location. BLE would have been the most convenient but it has its own complexities with detection. On the other hand, phone Geolocation API is easier to scale, and we wanted to use Google's Geolocation API for that but we found that Expo also has their own location library, so we decided to go with that.
 
 ## Accomplishments that we're proud of
 We take pride in successfully implementing the core functionalities of LoveAlarm—ringing of alarms and profiles disappearing when they step outside the 10-meter radius.
