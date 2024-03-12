@@ -19,6 +19,7 @@ const MatchingScreen = ({ route }) => {
 
     const handleRingPress = () => {
 
+        // Need to change --------------------------------
         fetch('http://206.12.45.58:3001/api/likeUsers', {
             method: 'PUT',
             headers: {
@@ -92,7 +93,7 @@ const MatchingScreen = ({ route }) => {
         //     longitude: location.longitude,
         // }));
 
-        
+        //  Need to change ----------------------------------
         fetch('http://206.12.45.58:3001/api/nearbyUsers', {
             method: 'POST',
             headers: {
