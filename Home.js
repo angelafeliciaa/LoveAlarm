@@ -59,8 +59,9 @@ const Home = () => {
         console.error('Location data not available');
         return;
       }
-
-      const response = await fetch('http://128.189.210.153:3001/api/record', {
+      
+      // Need to change --------------------------------------------------
+      const response = await fetch('http://206.12.45.58:3001/api/record', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

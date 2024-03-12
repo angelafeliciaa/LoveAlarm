@@ -19,7 +19,7 @@ const MatchingScreen = ({ route }) => {
 
     const handleRingPress = () => {
 
-        fetch('http://128.189.210.153:3001/api/likeUsers', {
+        fetch('http://206.12.45.58:3001/api/likeUsers', {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
@@ -93,7 +93,7 @@ const MatchingScreen = ({ route }) => {
         // }));
 
         
-        fetch('http://128.189.210.153:3001/api/nearbyUsers', {
+        fetch('http://206.12.45.58:3001/api/nearbyUsers', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
