@@ -25,3 +25,5 @@ As a team of three full-stack developers without dedicated designers or product 
 
 ## What's next for LoveAlarm
 We envision introducing a premium paid feature that reveals the identity and description of the person who rang the alarm. This enhancement adds a layer of intrigue for users seeking a more personalized connection.
+
+Devpost Link: https://devpost.com/software/lovealarm
