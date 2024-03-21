@@ -1,5 +1,5 @@
 
-# 💗 LoveAlarm:  Connect with people within a 10-metre radius and ring their love alarm 🔔
+# 💗 LoveAlarm:  Anonymously connect with people around you by ringing their love alarm 🔔
 
 ![IMG_0697](https://github.com/angelafeliciaa/lovealarm/assets/124738657/485d287f-4b32-4882-a9a1-855520a5cc9e)
 
